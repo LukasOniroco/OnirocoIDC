@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Oniroco IEC — Vartotojo gidas</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000;--bg2:#0A0A0B;--sf:#1C1C1E;--sf2:#2C2C2E;--sf3:#3A3A3C;
+  --ac:#0071E3;--ac-dim:rgba(0,113,227,0.15);
+  --green:#30D158;--green-bg:rgba(48,209,88,0.10);
+  --red:#FF453A;--red-bg:rgba(255,69,58,0.10);
+  --amber:#FF9F0A;--amber-bg:rgba(255,159,10,0.10);
+  --bo:rgba(255,255,255,0.10);--bo2:rgba(255,255,255,0.05);
+  --tx:#F5F5F7;--tx2:rgba(255,255,255,0.55);--tx3:rgba(255,255,255,0.22);
+  --rad:14px;--rad-sm:10px;
+  --blur:blur(24px) saturate(180%);
+  --ease:cubic-bezier(0.4,0,0.2,1);
+}
+html,body{background:var(--bg);color:var(--tx);min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.65}
+::selection{background:var(--ac);color:#fff}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.10);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.18)}
+
+/* ===== HERO ===== */
+.hero{
+  min-height:48vh;
+  background:radial-gradient(ellipse at 50% 30%,rgba(0,113,227,0.10) 0%,transparent 65%),var(--bg);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:96px 24px 56px;text-align:center;
+  border-bottom:0.5px solid var(--bo);
+}
+.hero-eyebrow{font-size:12px;font-weight:600;color:var(--ac);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:18px}
+.hero-title{
+  font-size:clamp(40px,7vw,72px);font-weight:700;letter-spacing:-0.04em;
+  background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,0.65) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:18px;line-height:1.05;
+}
+.hero-subtitle{font-size:clamp(16px,2.2vw,20px);color:var(--tx2);max-width:620px;margin:0 auto 36px;font-weight:400}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--ac);color:#fff;padding:14px 28px;border-radius:99px;
+  font-weight:600;font-size:14px;text-decoration:none;letter-spacing:-0.01em;
+  transition:.2s var(--ease);
+}
+.hero-cta:hover{transform:translateY(-1px);background:var(--ac);filter:brightness(1.08)}
+.hero-meta{display:flex;gap:18px;justify-content:center;margin-top:32px;font-size:12px;color:var(--tx3)}
+.hero-meta .dot{width:3px;height:3px;background:var(--tx3);border-radius:50%;align-self:center}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(0,0,0,0.80);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border-bottom:0.5px solid var(--bo);
+  padding:14px 28px;display:flex;align-items:center;gap:16px;
+}
+.topbar-logo{font-size:14px;font-weight:600;letter-spacing:-0.01em;cursor:pointer;color:var(--tx);text-decoration:none}
+.topbar-logo:hover{opacity:0.7}
+.topbar-divider{color:var(--tx3);font-weight:300}
+.topbar-section{font-size:13px;color:var(--tx2);font-weight:500}
+.topbar-spacer{flex:1}
+.topbar-search{
+  background:var(--sf2);border:0.5px solid var(--bo);border-radius:8px;
+  padding:7px 14px 7px 34px;color:var(--tx);font-size:13px;width:240px;
+  font-family:inherit;transition:.15s var(--ease);
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>');
+  background-repeat:no-repeat;background-position:12px center;
+}
+.topbar-search:focus{outline:none;border-color:var(--ac);background-color:var(--sf3)}
+.topbar-search::placeholder{color:var(--tx3)}
+.topbar-print{
+  background:transparent;border:0.5px solid var(--bo);color:var(--tx2);
+  padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;
+  cursor:pointer;font-family:inherit;transition:.15s var(--ease);
+}
+.topbar-print:hover{background:var(--sf2);color:var(--tx);border-color:var(--tx3)}
+@media(max-width:720px){
+  .topbar-search,.topbar-section,.topbar-divider{display:none}
+  .topbar{padding:12px 18px}
+}
+
+/* ===== LAYOUT ===== */
+.app{display:flex;max-width:1280px;margin:0 auto}
+.sidebar{
+  width:240px;flex-shrink:0;padding:36px 0 36px 28px;
+  position:sticky;top:55px;height:calc(100vh - 55px);overflow-y:auto;
+}
+.sidebar h4{font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:0.10em;margin:24px 0 8px;padding-left:14px}
+.sidebar h4:first-child{margin-top:0}
+.sidebar a{display:block;padding:7px 14px;border-radius:7px;color:var(--tx2);text-decoration:none;font-size:13.5px;font-weight:450;transition:.12s var(--ease)}
+.sidebar a:hover{background:var(--sf2);color:var(--tx)}
+.sidebar a.on{background:var(--sf2);color:var(--tx);font-weight:550}
+.sidebar a.on::before{content:'';display:inline-block;width:2px;height:14px;background:var(--ac);vertical-align:middle;margin-right:8px;margin-left:-10px;border-radius:2px}
+.content{flex:1;min-width:0;padding:56px 40px 120px;max-width:780px}
+@media(max-width:900px){
+  .sidebar{display:none}
+  .content{padding:36px 24px 80px}
+}
+
+/* ===== TYPOGRAPHY ===== */
+section{margin-bottom:80px;scroll-margin-top:80px}
+section:last-child{margin-bottom:0}
+h1{font-size:clamp(32px,5vw,42px);font-weight:700;letter-spacing:-0.03em;margin-bottom:14px;line-height:1.1}
+h2{font-size:clamp(22px,3vw,28px);font-weight:650;letter-spacing:-0.02em;margin:48px 0 14px;line-height:1.2}
+h3{font-size:17px;font-weight:600;margin:32px 0 10px;letter-spacing:-0.01em;color:var(--tx)}
+.lead{font-size:17px;color:var(--tx2);margin-bottom:32px;line-height:1.6;font-weight:400}
+p{margin-bottom:14px;color:rgba(255,255,255,0.78);font-size:15px}
+strong{color:var(--tx);font-weight:600}
+em{font-style:normal;color:var(--tx);background:var(--sf2);padding:1px 6px;border-radius:4px;font-size:0.95em}
+ul,ol{margin:8px 0 18px 22px;color:rgba(255,255,255,0.78);font-size:15px}
+li{margin-bottom:6px}
+li::marker{color:var(--tx3)}
+a{color:var(--ac);text-decoration:none}
+a:hover{text-decoration:underline}
+hr{border:none;border-top:0.5px solid var(--bo);margin:40px 0}
+
+/* ===== CARDS ===== */
+.card{background:var(--sf);border:0.5px solid var(--bo);border-radius:var(--rad);padding:24px;margin:18px 0}
+
+/* ===== CALLOUTS — subtle borderless ===== */
+.note{border-left:2px solid var(--ac);padding:6px 0 6px 16px;margin:18px 0;font-size:14px;color:var(--tx2)}
+.note strong{color:var(--tx)}
+.note.warn{border-left-color:var(--red)}
+.note.tip{border-left-color:var(--amber)}
+.note.ok{border-left-color:var(--green)}
+
+/* ===== STEPS ===== */
+.steps{margin:20px 0;counter-reset:step}
+.step{display:grid;grid-template-columns:24px 1fr;gap:14px;margin-bottom:14px;align-items:start}
+.step::before{
+  counter-increment:step;content:counter(step);
+  width:24px;height:24px;border-radius:50%;
+  background:transparent;border:0.5px solid var(--tx3);color:var(--tx2);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:600;font-size:12px;flex-shrink:0;margin-top:2px;
+}
+.step-body strong{display:block;margin-bottom:2px;font-size:15px;color:var(--tx)}
+.step-body p{margin:0;color:var(--tx2);font-size:14px;line-height:1.55}
+
+/* ===== KBD ===== */
+kbd{display:inline-block;background:var(--sf2);border:0.5px solid var(--bo);border-radius:5px;padding:1px 7px;font-family:'SF Mono','Menlo',monospace;font-size:11.5px;color:var(--tx);box-shadow:0 1px 0 rgba(0,0,0,0.4)}
+
+/* ===== CODE ===== */
+code{background:var(--sf2);padding:1px 6px;border-radius:5px;font-family:'SF Mono','Menlo','Consolas',monospace;font-size:12.5px;color:var(--tx)}
+pre{background:var(--sf);border:0.5px solid var(--bo);border-radius:var(--rad-sm);padding:18px 20px;margin:16px 0;font-family:'SF Mono','Menlo',monospace;font-size:12.5px;line-height:1.6;overflow-x:auto;color:var(--tx2)}
+pre code{background:transparent;padding:0;color:inherit}
+
+/* ===== TABLES ===== */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th,td{padding:11px 14px;text-align:left;border-bottom:0.5px solid var(--bo);vertical-align:top}
+th{font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--tx3);padding-bottom:10px}
+td{color:var(--tx2)}
+td strong{color:var(--tx)}
+tr:last-child td{border-bottom:none}
+
+/* ===== ROLE BADGES ===== */
+.role-badge{display:inline-block;padding:2px 9px;border-radius:5px;font-size:11px;font-weight:600;border:0.5px solid var(--bo);background:var(--sf2);color:var(--tx);white-space:nowrap}
+
+/* ===== TOC GRID ===== */
+.toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:28px 0 0}
+.toc-card{background:var(--sf);border:0.5px solid var(--bo);border-radius:var(--rad);padding:20px;text-decoration:none;color:var(--tx);transition:.15s var(--ease)}
+.toc-card:hover{background:var(--sf2);border-color:var(--tx3);transform:translateY(-1px)}
+.toc-card .num{font-size:11px;color:var(--tx3);font-weight:600;letter-spacing:0.06em;margin-bottom:10px;font-variant-numeric:tabular-nums}
+.toc-card .title{font-weight:600;font-size:15px;margin-bottom:4px;letter-spacing:-0.01em}
+.toc-card .desc{font-size:13px;color:var(--tx2);line-height:1.5}
+
+/* ===== FAQ ===== */
+details{border-bottom:0.5px solid var(--bo)}
+details:first-of-type{border-top:0.5px solid var(--bo)}
+details summary{padding:18px 0;cursor:pointer;font-weight:550;font-size:15px;list-style:none;display:flex;align-items:center;justify-content:space-between;color:var(--tx);transition:.15s var(--ease)}
+details summary:hover{color:var(--ac)}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:'+';color:var(--tx3);font-size:18px;font-weight:300;transition:.2s var(--ease)}
+details[open] summary::after{transform:rotate(45deg)}
+details .answer{padding:0 0 20px;color:var(--tx2);font-size:14.5px;line-height:1.65}
+details .answer p:first-child{margin-top:0}
+
+/* ===== UI MOCK ===== */
+.ui-mock{background:var(--sf);border:0.5px solid var(--bo);border-radius:var(--rad-sm);padding:14px 16px;margin:16px 0;font-size:13px;color:var(--tx2);font-family:inherit}
+.ui-mock-label{font-size:10.5px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
+.ui-mock-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--bo2)}
+.ui-mock-row:last-child{border-bottom:none}
+
+/* ===== BUTTON MOCK ===== */
+.btn-mock{display:inline-block;padding:4px 11px;border-radius:6px;font-size:12px;font-weight:550;background:var(--sf2);border:0.5px solid var(--bo);color:var(--tx);margin:0 1px}
+.btn-mock.ac{background:var(--ac);border-color:var(--ac);color:#fff}
+.btn-mock.no{background:var(--red-bg);border-color:rgba(255,69,58,0.25);color:var(--red)}
+
+/* ===== FOOTER ===== */
+footer{border-top:0.5px solid var(--bo);padding:48px 24px;text-align:center;color:var(--tx3);font-size:13px}
+footer p{color:var(--tx3);margin:4px 0;font-size:12.5px}
+footer a{color:var(--tx2)}
+
+/* ===== PRINT ===== */
+@media print{
+  .sidebar,.topbar,.hero-cta,.topbar-print{display:none}
+  .hero{min-height:auto;page-break-after:always;border:0;padding:40px 0}
+  .content{max-width:100%;padding:20px}
+}
+</style>
+</head>
+<body>
+
+<header class="hero" id="top">
+  <div class="hero-eyebrow">Vartotojo gidas</div>
+  <h1 class="hero-title">Oniroco IEC</h1>
+  <p class="hero-subtitle">Intelligent Events Control. Pilna sistema renginių, įrangos ir komandos valdymui. Šitame gide rasite viską, ką reikia žinoti norint pradėti dirbti.</p>
+  <a href="#start" class="hero-cta">Pradėti</a>
+  <div class="hero-meta">
+    <span>v1.0</span><span class="dot"></span>
+    <span>14 skyrių</span><span class="dot"></span>
+    <span>~15 min skaitymo</span>
+  </div>
+</header>
+
+<nav class="topbar">
+  <a href="#top" class="topbar-logo">Oniroco IEC</a>
+  <span class="topbar-divider">/</span>
+  <span class="topbar-section">Vartotojo gidas</span>
+  <div class="topbar-spacer"></div>
+  <input type="text" class="topbar-search" id="search" placeholder="Ieškoti gide" oninput="searchGuide(this.value)">
+  <button class="topbar-print" onclick="window.print()">Spausdinti</button>
+</nav>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <h4>Pradžia</h4>
+    <a href="#start">Pradedam</a>
+    <a href="#login">Prisijungimas</a>
+    <a href="#roles">Vartotojų rolės</a>
+    <a href="#interface">Sąsaja</a>
+    
+    <h4>Renginiai</h4>
+    <a href="#events">Renginių valdymas</a>
+    <a href="#multiday">Multi-day renginiai</a>
+    <a href="#statuses">Statusai</a>
+    
+    <h4>Įranga</h4>
+    <a href="#equipment">Įranga ir komplektai</a>
+    <a href="#scanner">QR skenavimas</a>
+    <a href="#kits">Komplektai</a>
+    
+    <h4>Komanda ir HR</h4>
+    <a href="#team">Komandos pridėjimas</a>
+    <a href="#jobs">Pareigybės</a>
+    <a href="#timepicker">Time picker</a>
+    <a href="#conflicts">Konfliktai</a>
+    
+    <h4>Ataskaitos</h4>
+    <a href="#payroll">Atlyginimai</a>
+    <a href="#profitability">Profitabilumas</a>
+    <a href="#export">Excel eksportas</a>
+    
+    <h4>Pagalba</h4>
+    <a href="#faq">DUK</a>
+    <a href="#tips">Patarimai</a>
+    <a href="#troubleshooting">Problemų sprendimas</a>
+  </aside>
+
+  <main class="content">
+
+    <section id="start">
+      <h1>Pradedam</h1>
+      <p class="lead">Sveiki atvykę į Oniroco IEC. Šitas gidas padės susipažinti su sistema per kelias minutes. Pradėkite nuo trumpos apžvalgos arba peršokite į konkretų skyrių iš sąrašo kairėje.</p>
+
+      <h3>Greita navigacija</h3>
+      <div class="toc-grid">
+        <a href="#events" class="toc-card"><div class="num">01</div><div class="title">Renginiai</div><div class="desc">Sukurti, redaguoti, planuoti renginius su komandomis</div></a>
+        <a href="#equipment" class="toc-card"><div class="num">02</div><div class="title">Įranga</div><div class="desc">Skenuoti, paimti, grąžinti, valdyti komplektus</div></a>
+        <a href="#jobs" class="toc-card"><div class="num">03</div><div class="title">Pareigybės</div><div class="desc">Tarifai per etapą, automatinis atlyginimo skaičiavimas</div></a>
+        <a href="#timepicker" class="toc-card"><div class="num">04</div><div class="title">Time picker</div><div class="desc">Nuo–iki laiko įvedimas pagal kiekvieną dieną</div></a>
+        <a href="#payroll" class="toc-card"><div class="num">05</div><div class="title">Atlyginimai</div><div class="desc">Mėnesio ataskaita, Excel eksportas, profitabilumas</div></a>
+        <a href="#faq" class="toc-card"><div class="num">06</div><div class="title">DUK</div><div class="desc">Atsakymai į dažniausiai kylančius klausimus</div></a>
+      </div>
+
+      <div class="note">
+        <strong>Patarimas.</strong> Šitame gide ieškoti gali viršuje (<kbd>Ctrl</kbd> <kbd>F</kbd> arba paieškos langelis dešinėje). Kiekvienas terminas susijęs su konkrečiu sistemos elementu.
+      </div>
+    </section>
+
+    <section id="login">
+      <h2>Prisijungimas</h2>
+      <p class="lead">Sistema turi du prisijungimo būdus: PIN kodu (greitai mobiliajame) arba slaptažodžiu.</p>
+
+      <h3>PIN prisijungimas</h3>
+      <div class="steps">
+        <div class="step"><div class="step-body"><strong>Atidarykite Oniroco</strong><p>Naršyklės adresų juostoje įveskite <code>oniroco-idc.vercel.app</code></p></div></div>
+        <div class="step"><div class="step-body"><strong>Pasirinkite savo vartotoją</strong><p>Iš sąrašo spustelėkite savo vardą</p></div></div>
+        <div class="step"><div class="step-body"><strong>Įveskite 4 skaitmenų PIN</strong><p>Klaviatūra atsiranda po jūsų vardo paspaudimo</p></div></div>
+        <div class="step"><div class="step-body"><strong>Patenkate į pagrindinį dashboard'ą</strong><p>Toliau galite naudoti sistemą pagal savo rolę</p></div></div>
+      </div>
+
+      <div class="note warn">
+        <strong>Pamiršote PIN?</strong> Susisiekite su administratoriumi — jis gali jį atstatyti per Vartotojų valdymą.
+      </div>
+
+      <h3>Slaptažodžio prisijungimas</h3>
+      <p>Login lange paspauskite <span class="btn-mock">Slaptažodis</span> mygtuką ir įveskite savo username plius slaptažodį. Naudokite šitą būdą tik patikimame kompiuteryje.</p>
+    </section>
+
+    <section id="roles">
+      <h2>Vartotojų rolės</h2>
+      <p class="lead">Sistema turi 6 skirtingas roles. Kiekviena turi savo unikalų funkcionalumo rinkinį pritaikytą darbo specifikai.</p>
+
+      <table>
+        <thead><tr><th>Rolė</th><th>Galimybės</th></tr></thead>
+        <tbody>
+          <tr><td><span class="role-badge">Administratorius</span></td><td>Pilna sistemos kontrolė, vartotojų valdymas, nustatymai, ataskaitos. Vienintelis, kuris gali ištrinti renginius visam laikui.</td></tr>
+          <tr><td><span class="role-badge">Tech Lead</span></td><td>Beveik kaip administratorius, tik be galimybės pakeisti vartotojų roles. Tinka technikos vadovams.</td></tr>
+          <tr><td><span class="role-badge">HR Lead</span></td><td>Administratoriaus teisės plius Personalo modulis. Dirba su atlyginimais, pareigybėmis, ataskaitomis.</td></tr>
+          <tr><td><span class="role-badge">Renginio koordinatorius</span></td><td>Kuria, redaguoja renginius, pridėda komandą. Negali keisti pagrindinių sistemos nustatymų.</td></tr>
+          <tr><td><span class="role-badge">Technikas</span></td><td>Mato priskirtus renginius, gali skenuoti įrangą, fiksuoti darbo valandas.</td></tr>
+          <tr><td><span class="role-badge">Operatorius</span></td><td>Skenuoja įrangą, paima ar grąžina, mato priskirtus renginius.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        <strong>Patarimas administratoriui.</strong> Naują darbuotoją kurkite per <strong>Darbuotojai</strong> tab'ą, ne per <strong>Vartotojai</strong>. Sistema automatiškai sukurs susietą vartotojo paskyrą su PIN'u.
+      </div>
+    </section>
+
+    <section id="interface">
+      <h2>Sąsaja</h2>
+      <p class="lead">Oniroco sąsaja sukurta minimalistiškai. Viskas grupuota pagal funkciją: viršuje navigacija, viduryje pagrindinis turinys.</p>
+
+      <h3>Pagrindinės navigacijos grupės</h3>
+      <div class="card">
+        <p><strong>Pradžia.</strong> Dashboard'as su KPI, artimiausiais renginiais, įrangos statistika.</p>
+        <p><strong>Įranga.</strong> Įrangos sąrašas, kategorijos, sandėliai, servisas.</p>
+        <p><strong>Renginiai.</strong> Renginiai, skenavimas, „Mano paimta".</p>
+        <p><strong>HR.</strong> Personalas, pareigybės, atlyginimai.</p>
+        <p><strong>Ataskaitos.</strong> Statistika, darbo statistika, auditas.</p>
+        <p style="margin-bottom:0"><strong>Nustatymai.</strong> Tarifai, etapai, kategorijos, saugykla.</p>
+      </div>
+
+      <h3>Mobile režimas</h3>
+      <p>Telefone navigacija automatiškai virsta į horizontaliai slenkamą juostą viršuje. Mygtukai rodo tik ikonas — taupo vietos. Visi modal'ai pritaikyti telefono ekranui.</p>
+
+      <div class="note ok">
+        <strong>iPhone Safari.</strong> Pridėkite Oniroco į pradžios ekraną — atsidarius veiks kaip įprasta programėlė. Spauskite <em>Share</em> → <em>Add to Home Screen</em>.
+      </div>
+    </section>
+
+    <section id="events">
+      <h1>Renginių valdymas</h1>
+      <p class="lead">Renginiai yra Oniroco esmė — viskas sukasi aplink juos. Čia kuriate, planuojate, sekate, atsiskaitoja&shy;te.</p>
+
+      <h2>Naujo renginio kūrimas</h2>
+      <div class="steps">
+        <div class="step"><div class="step-body"><strong>Eikite į Renginiai</strong><p>Iš pagrindinio meniu</p></div></div>
+        <div class="step"><div class="step-body"><strong>Spauskite „+ Naujas renginys"</strong><p>Mygtukas viršuje, dešinėje pusėje</p></div></div>
+        <div class="step"><div class="step-body"><strong>Užpildykite pagrindinę informaciją</strong><p>Pavadinimas, klientas, data, laikas, vieta, kategorija</p></div></div>
+        <div class="step"><div class="step-body"><strong>Pasirinkite koordinatorių</strong><p>Renginio kontaktinį asmenį iš jūsų vartotojų sąrašo</p></div></div>
+        <div class="step"><div class="step-body"><strong>Pridėkite biudžetą (neprivaloma)</strong><p>Pajamos be PVM — naudojama profitabilumo skaičiavimui</p></div></div>
+        <div class="step"><div class="step-body"><strong>Išsaugokite</strong><p>Renginys atsiranda pagrindiniame sąraše. Toliau galite pridėti įrangą ir komandą.</p></div></div>
+      </div>
+
+      <h2>Renginio detalės</h2>
+      <p>Atidarius renginį, viršuje matomi tab'ai:</p>
+      <ul>
+        <li><strong>Info</strong> — pagrindiniai duomenys, profitabilumas, atlyginimai</li>
+        <li><strong>Įranga</strong> — planuojama ir paimta įranga</li>
+        <li><strong>Taskai</strong> — užduotys ir checklist'ai</li>
+        <li><strong>Paslaugos</strong> — papildomos paslaugos, pajamos</li>
+        <li><strong>Komanda</strong> — priskirti darbuotojai, jų pareigybės, valandos</li>
+        <li><strong>Pokalbis</strong> — komandos chat'as</li>
+        <li><strong>Žurnalas</strong> — visi renginio veiksmai</li>
+      </ul>
+
+      <div class="note">
+        <strong>Profitabilumo banneris.</strong> Info tab'e viršuje matosi automatiškai paskaičiuotas pelnas arba nuostolis. Reikia: užpildyto biudžeto plius komandos su priskirtomis pareigybėmis ir valandomis.
+      </div>
+
+      <h3 id="multiday">Multi-day renginiai</h3>
+      <p>Jei renginys vyksta kelias dienas (pvz. festivalis), kuriant pasirinkite skirtingas pradžios ir pabaigos datas:</p>
+      <pre><code>Nuo: 2026-06-04
+Iki: 2026-06-06
+Laikas: 14:00 → 23:00 (kasdien)</code></pre>
+
+      <p>Sistema automatiškai sugeneruos visas dienas ir leis kiekvienai dienai atskirai įvesti darbo valandas time picker'yje. Plačiau — <a href="#timepicker">Time picker</a>.</p>
+
+      <h3 id="statuses">Renginio statusai</h3>
+      <p>Kiekvienas renginys turi statusą, kuris parodo jo etapą. Default statusai:</p>
+      <table>
+        <thead><tr><th>Statusas</th><th>Reikšmė</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Juodraštis</strong></td><td>Pradinis etapas, pasiūlymo paruošimas</td></tr>
+          <tr><td><strong>Pasiūlymas</strong></td><td>Pateiktas klientui, laukiama atsakymo</td></tr>
+          <tr><td><strong>Patvirtintas</strong></td><td>Klientas patvirtino, galima planuoti</td></tr>
+          <tr><td><strong>Įvyko</strong></td><td>Renginys įvyko, apskaitos etapas</td></tr>
+        </tbody>
+      </table>
+      <p>Administratorius gali kurti naujus statusus per <strong>Nustatymai → Statusai</strong>.</p>
+    </section>
+
+    <section id="equipment">
+      <h1>Įranga</h1>
+      <p class="lead">Visa techninė įranga sistemos, jos statusai, paėmimas ir grąžinimas, sandėlių valdymas.</p>
+
+      <h2>Įrangos pridėjimas</h2>
+      <div class="steps">
+        <div class="step"><div class="step-body"><strong>Įranga → + Pridėti</strong><p>Iš pagrindinio sąrašo</p></div></div>
+        <div class="step"><div class="step-body"><strong>Užpildykite duomenis</strong><p>Pavadinimas, kategorija, serijos numeris, sandėlis, kaina</p></div></div>
+        <div class="step"><div class="step-body"><strong>Pridėkite nuotrauką (neprivaloma)</strong><p>Padės identifikuoti įrangą</p></div></div>
+        <div class="step"><div class="step-body"><strong>Pažymėkite VIP, jei reikia</strong><p>VIP įrangai grąžinant reikės nuotraukos — apsauga nuo žalos</p></div></div>
+      </div>
+
+      <h2>Įrangos būklės</h2>
+      <table>
+        <thead><tr><th>Būklė</th><th>Reikšmė</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Laisva</strong></td><td>Įranga sandėlyje, prieinama imti</td></tr>
+          <tr><td><strong>Rezervuota</strong></td><td>Suplanuota būsimam renginiui</td></tr>
+          <tr><td><strong>Paimta</strong></td><td>Šiuo metu kažkas naudoja</td></tr>
+          <tr><td><strong>Servise</strong></td><td>Taisoma, neprieinama</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="scanner">QR skenavimas</h3>
+      <p>Kiekviena įranga turi unikalų QR kodą. Skenuojant telefonu sistema žino, kuri tai įranga, ir leidžia greitai atlikti veiksmus.</p>
+      <div class="steps">
+        <div class="step"><div class="step-body"><strong>Spauskite Skenuoti</strong><p>Iš pagrindinės navigacijos</p></div></div>
+        <div class="step"><div class="step-body"><strong>Leiskite naršyklei naudoti kamerą</strong><p>Pirmą kartą naršyklė paklaus leidimo</p></div></div>
+        <div class="step"><div class="step-body"><strong>Nukreipkite į QR kodą</strong><p>Sistema automatiškai atpažins ir parodys įrangos kortelę</p></div></div>
+        <div class="step"><div class="step-body"><strong>Pasirinkite veiksmą</strong><p>Paimti, grąžinti, pažymėti į renginį</p></div></div>
+      </div>
+
+      <div class="note warn">
+        <strong>Apsauga nuo dvigubo paėmimo.</strong> Jei įranga jau paimta į kitą renginį, sistema neleis jos paimti dar kartą. Pranešš, kad pirmiau reikia grąžinti.
+      </div>
+
+      <h3 id="kits">Komplektai</h3>
+      <p>Komplektas yra grupė įrangos, kurią dažnai imate kartu (pvz. „Garsų pultas plius 4 mikrofonai plius kabeliai"). Sukurkite komplektą per <strong>Komplektai</strong> tab'ą — vėliau galėsite pridėti VISĄ komplektą į renginį vienu spustelėjimu.</p>
+
+      <div class="note">
+        <strong>Patarimas.</strong> Komplektai pritaikyti tipiniams renginiams. Jei dažnai darote „SEB gimtadienius", sukurkite „SEB komplektą" ir kiekvieną kartą pridėsite per vieną mygtuką.
+      </div>
+    </section>
+
+    <section id="team">
+      <h1>Komandos pridėjimas</h1>
+      <p class="lead">Komandai priskirti renginiui — pridėkite žmones, priskirkite pareigybes, įveskite valandas. Sistema automatiškai apskaičiuos atlyginimus.</p>
+
+      <h2>Žmogaus pridėjimas į renginį</h2>
+      <div class="steps">
+        <div class="step"><div class="step-body"><strong>Atidarykite renginį</strong><p>Iš renginių sąrašo</p></div></div>
+        <div class="step"><div class="step-body"><strong>Eikite į Komanda tab'ą</strong><p>Tarp renginio detalės skirtukų</p></div></div>
+        <div class="step"><div class="step-body"><strong>Spauskite „Iš vartotojų"</strong><p>Pasirinkti iš sistemos vartotojų. Arba „Įvesti ranka" — laisvai įvesti kontaktą.</p></div></div>
+        <div class="step"><div class="step-body"><strong>Sistema patikrins konfliktus</strong><p>Jei žmogus jau dirba kitam renginiui tuo pačiu laiku — pranesš. Žiūrėkite <a href="#conflicts">Konfliktai</a>.</p></div></div>
+      </div>
+    </section>
+
+    <section id="jobs">
+      <h2>Pareigybės — DU skaičiavimas</h2>
+      <p class="lead">Pareigybė yra darbo tipas su savo tarifais ir aktyviais etapais. Pavyzdžiui „Renginio koordinatorius", „Technikas", „Vairuotojas". Kiekvienas turi savo €/val tarifus per etapą.</p>
+
+      <div class="note ok">
+        <strong>Kodėl pareigybės.</strong> Vietoje to, kad kiekvienam renginiui ranka įvedinėti tarifus, sukurkite pareigybes vieną kartą — paskui naujas darbuotojas gauna tarifus automatiškai pagal savo darbo tipą.
+      </div>
+
+      <h3>Default pareigybės sistemoje</h3>
+      <table>
+        <thead><tr><th>Pareigybė</th><th>Tipiniai etapai</th><th>Vid. tarifas</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Renginio koordinatorius</strong></td><td>Pasiruošimas, Renginys, Demontažas</td><td>10–15 €/val</td></tr>
+          <tr><td><strong>Technikas</strong></td><td>Visi techninės etapai</td><td>7–10 €/val</td></tr>
+          <tr><td><strong>Vairuotojas</strong></td><td>Kelionė, Pakavimas, Iškrovimas</td><td>5–6 €/val</td></tr>
+          <tr><td><strong>Pagalbinis darbuotojas</strong></td><td>Pakavimas, Mount, Renginys, Demontažas</td><td>5–6 €/val</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Naujos pareigybės kūrimas</h3>
+      <div class="steps">
+        <div class="step"><div class="step-body"><strong>HR → Pareigybės</strong><p>Tik administratoriaus prieiga</p></div></div>
+        <div class="step"><div class="step-body"><strong>+ Nauja pareigybė</strong><p>Atsidaro modal'as</p></div></div>
+        <div class="step"><div class="step-body"><strong>Pavadinimas, ikona, spalva</strong><p>Pvz. „Šviesų inžinierius"</p></div></div>
+        <div class="step"><div class="step-body"><strong>Pažymėkite aktyvius etapus</strong><p>Tik tie etapai, kuriuose šitas darbuotojas dirba</p></div></div>
+        <div class="step"><div class="step-body"><strong>Įveskite tarifą kiekvienam etapui</strong><p>Pvz. Renginys 12€/val, Mount 15€/val (sudėtingesnis)</p></div></div>
+        <div class="step"><div class="step-body"><strong>Išsaugokite</strong><p>Pareigybė atsiranda sąraše ir gali būti priskirta naujiems team nariams</p></div></div>
+      </div>
+
+      <h3>Pareigybės priskyrimas team nariui</h3>
+      <p>Renginio Komandos tab'e prie kiekvieno nario yra badge:</p>
+      <ul>
+        <li><strong>Spalvotas badge</strong> — pareigybė priskirta (galima keisti spustelėjus)</li>
+        <li><strong>„Be pareigybės — pasirinkti"</strong> — kvietimas priskirti</li>
+      </ul>
+      <p>Spustelėkite badge → modal'as su visomis pareigybėmis → pasirinkite tinkamą.</p>
+
+      <div class="note">
+        <strong>Atlyginimo skaičiavimas.</strong> Po priskyrimo, atlyginimas = valandos × etapo tarifas (iš pareigybės). Jei nori, gali pridėti asmeninį multiplier (×1.5 senior, ×0.7 junior) per kortelės dešinę pusę.
+      </div>
+    </section>
+
+    <section id="timepicker">
+      <h2>Time picker — nuo–iki</h2>
+      <p class="lead">Vietoje vienkartinio „kiek valandų" lauko, time picker'is leidžia įvesti tikslų darbo laiką (nuo–iki) per kiekvieną dieną atskirai.</p>
+
+      <h3>Kaip atrodo</h3>
+      <div class="ui-mock">
+        <div class="ui-mock-label">Time picker modal'as</div>
+        <div class="ui-mock-row"><span style="color:var(--tx)">Pasiruošimas</span><span style="color:var(--tx3);margin-left:auto">10 €/val</span></div>
+        <div class="ui-mock-row"><span>Nuo</span><kbd>08</kbd>:<kbd>00</kbd><span style="margin-left:8px">Iki</span><kbd>10</kbd>:<kbd>00</kbd><span style="margin-left:auto;color:var(--green)">2.0 val · 20,00 €</span></div>
+        <div class="ui-mock-row" style="margin-top:8px"><span style="color:var(--tx)">Renginys</span><span style="color:var(--tx3);margin-left:auto">15 €/val</span></div>
+        <div class="ui-mock-row"><span>Nuo</span><kbd>12</kbd>:<kbd>00</kbd><span style="margin-left:8px">Iki</span><kbd>20</kbd>:<kbd>00</kbd><span style="margin-left:auto;color:var(--green)">8.0 val · 120,00 €</span></div>
+        <div class="ui-mock-row" style="border-top:0.5px solid var(--bo);margin-top:8px;padding-top:10px"><span style="color:var(--tx);font-weight:600">Dienos viso</span><span style="margin-left:auto;color:var(--green);font-weight:600;font-size:14px">140,00 €</span></div>
+      </div>
+
+      <h3>Kaip naudoti</h3>
+      <div class="steps">
+        <div class="step"><div class="step-body"><strong>Komandos tab'e spustelėkite ant dienos kortelės</strong><p>Per kiekvieną nario kortelę matomi visos renginio dienos</p></div></div>
+        <div class="step"><div class="step-body"><strong>Pasirinkite valandą „Nuo"</strong><p>Sąraše: 08, 09, 10, ..., 23, kita diena, 00, 01, ..., 07</p></div></div>
+        <div class="step"><div class="step-body"><strong>Pasirinkite valandą „Iki"</strong><p>Minutės default'iškai 00. Galite keisti į 15, 30, 45.</p></div></div>
+        <div class="step"><div class="step-body"><strong>Auto-skaičiavimas</strong><p>Sistema automatiškai paskaičiuoja valandas ir sumą per etapą</p></div></div>
+        <div class="step"><div class="step-body"><strong>Multi-day: viršuje yra dienų tab'ai</strong><p>Pereikite tarp dienų vienu spustelėjimu</p></div></div>
+        <div class="step"><div class="step-body"><strong>Spauskite Išsaugoti</strong><p>Valandos išsaugomos, atlyginimas perskaičiuojamas</p></div></div>
+      </div>
+
+      <div class="note ok">
+        <strong>Naktiniai renginiai.</strong> Time picker palaiko vidurnaktį. Pvz. Nuo 22:00 → Iki 02:00 = 4 val (sekanti diena automatiškai). Net 08:00 → 07:00 = 23 val (visa para).
+      </div>
+
+      <div class="note tip">
+        <strong>Greitas pildymas.</strong> Jei žmogus dirba pilną dieną (pvz. 8 val), galite tiesiog įvesti valandų skaičių dešinėje, neįvesdami nuo–iki. Sistema priims abu būdus.
+      </div>
+    </section>
+
+    <section id="conflicts">
+      <h2>Konfliktų valdymas</h2>
+      <p class="lead">Sistema automatiškai aptinka, kai vienas darbuotojas paskirtas dviem renginiams tuo pačiu laiku. Yra du konfliktų lygmenys.</p>
+
+      <h3>Hard konfliktas — laikai persidengia</h3>
+      <div class="note warn">
+        <strong>Pavyzdys.</strong> Liepa dirba renginyje A (10:00–15:00) ir bandai pridėti į renginį B (12:00–16:00). Persidengimas yra 3 val. Sistema BLOKUOJA pridėjimą.
+      </div>
+      <p>Default'iškai sistema neleidžia. Bet <strong>administratorius</strong> gali override'inti su dvigubu patvirtinimu (tipuokite žodį „sutinku") — naudinga, jei tikrai būtina.</p>
+
+      <h3>Soft konfliktas — ta pati diena, skirtingi laikai</h3>
+      <div class="note">
+        <strong>Pavyzdys.</strong> Liepa dirba renginyje A (08:00–12:00) ir nori dirbti renginyje B (18:00–22:00). Laikai NEpersidengia, todėl sistema TIK ĮSPĖJA — galima patvirtinti.
+      </div>
+
+      <h3>Konflikto badge komandos kortelėje</h3>
+      <p>Po team nariu rodomas badge, jei žmogus turi konfliktų:</p>
+      <ul>
+        <li><strong>Konfliktas (N)</strong> — raudonas, hard konfliktai</li>
+        <li><strong>Dirbs ir kitur (N)</strong> — geltonas, soft (info)</li>
+      </ul>
+
+      <div class="note tip">
+        <strong>Patarimas.</strong> Pasiimkite kelias minutes patikrinti konfliktus prieš galutinai patvirtinant renginį. Tai apsaugo nuo embarrassing situacijų pas klientą.
+      </div>
+    </section>
+
+    <section id="payroll">
+      <h1>Atlyginimai</h1>
+      <p class="lead">Sistema automatiškai skaičiuoja atlyginimus pagal pareigybes ir įvestas valandas. Mėnesio ataskaitą galima eksportuoti į Excel.</p>
+
+      <h2>Atlyginimo apžvalga</h2>
+      <p>HR → Personalas yra pagrindinis atlyginimo dashboard'as.</p>
+
+      <div class="card">
+        <p><strong>Filtrai viršuje</strong></p>
+        <ul style="margin-bottom:14px"><li>Mėnuo arba laikotarpis</li><li>Konkretus darbuotojas</li><li>Renginio kategorija</li></ul>
+        <p><strong>Pagrindinė lentelė</strong></p>
+        <ul style="margin-bottom:0"><li>Darbuotojas, pareigybė</li><li>Renginių skaičius</li><li>Bendros valandos</li><li>Atlyginimas (€)</li><li>Vidutinis tarifas</li></ul>
+      </div>
+
+      <h3 id="profitability">Profitabilumas</h3>
+      <p>Kiekvieno renginio Info tab'e matosi:</p>
+      <table>
+        <thead><tr><th>Rodiklis</th><th>Skaičiavimas</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Pajamos</strong></td><td>Iš biudžeto plius paslaugų</td></tr>
+          <tr><td><strong>HR sąnaudos</strong></td><td>Suma visų komandos atlyginimų</td></tr>
+          <tr><td><strong>Pelnas</strong></td><td>Pajamos minus HR sąnaudos</td></tr>
+          <tr><td><strong>Marža (%)</strong></td><td>Pelnas / Pajamos × 100%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        <strong>Dashboard KPI.</strong> Pradiniame ekrane viršuje matosi mėnesio rezultatai — Pajamos, HR Sąnaudos, Pelnas. Spustelėkite kortelę → atsivers detalės.
+      </div>
+
+      <h3 id="export">Excel eksportas</h3>
+      <div class="steps">
+        <div class="step"><div class="step-body"><strong>HR → Personalas</strong><p>Filtruokite mėnesį arba darbuotoją</p></div></div>
+        <div class="step"><div class="step-body"><strong>Spauskite Excel</strong><p>Mygtukas viršuje</p></div></div>
+        <div class="step"><div class="step-body"><strong>Failas atsisiunčiamas</strong><p>Pavadinimas: <code>oniroco-payroll-YYYY-MM.xlsx</code></p></div></div>
+        <div class="step"><div class="step-body"><strong>Atidarykite Excel'yje</strong><p>Stulpeliai: vardas, pareigybė, valandos, atlyginimas, renginiai</p></div></div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <h1>Dažnai užduodami klausimai</h1>
+      <p class="lead">Greitas atsakymas į dažnai kylančius klausimus.</p>
+
+      <details><summary>Pamiršau slaptažodį arba PIN — ką daryti?</summary><div class="answer"><p>Susisiekite su administratoriumi. Jis gali atstatyti slaptažodį ir PIN per <strong>Vartotojų valdymą</strong>. Iš saugumo sumetimų savarankiško atstatymo nėra (pvz. per email link'ą), nes sistema dar nenaudoja Firebase Auth.</p></div></details>
+
+      <details><summary>Kaip pakeisti renginio kategoriją po sukūrimo?</summary><div class="answer"><p>Atidarykite renginį → Redaguoti → kategorijos pasirinkimas. Atkreipkite dėmesį: kategorijos pakeitimas perskaičiuoja atlyginimus pagal naują kategoriją (jei tarifai skiriasi).</p></div></details>
+
+      <details><summary>Įranga „dingo" iš sąrašo — kur ji?</summary><div class="answer"><p>Tikriausiai paimta į renginį. Patikrinkite:</p><ol><li>Filtras viršuje — galbūt rodomi tik „Laisva" vienetai</li><li>Atidarykite konkretų renginį → Įranga tab'as</li><li>Jei vis tiek nerandate — eikite į <strong>Saugykla → Sutaisyti automatiškai</strong></li></ol></div></details>
+
+      <details><summary>Kodėl atlyginimas rodomas 0,00 €?</summary><div class="answer"><p>Galimi keturi atvejai:</p><ol><li><strong>Žmogus neturi pareigybės</strong> — priskirkite per badge'ą</li><li><strong>Pareigybė neturi tarifo etapams</strong> — patikrinkite HR → Pareigybės</li><li><strong>Valandos neįvestos</strong> — atidarykite time picker'į ir įveskite</li><li><strong>Renginys neturi datos</strong> — be datos negalima įvesti laikų</li></ol></div></details>
+
+      <details><summary>Kaip ištrinti netyčia sukurtą renginį?</summary><div class="answer"><p>Atidarykite renginį → Daugiau (viršuje) → Ištrinti. Renginys persikelia į „Ištrinti" archyvą — jį dar galima atstatyti. Visam laikui ištrinti gali tik administratorius (po patvirtinimo žodžiu „sutinku").</p></div></details>
+
+      <details><summary>Ar galiu eksportuoti viską (full backup)?</summary><div class="answer"><p>Šiuo metu Excel eksportas yra tik atlyginimams. Visi duomenys saugomi Firebase debesyje, todėl jie automatiškai sinchronizuojasi. Pilnas JSON backup planuojamas ateityje.</p></div></details>
+
+      <details><summary>Kodėl nuotraukos kartais rodomos lėtai?</summary><div class="answer"><p>Naujos nuotraukos saugomos Firebase Storage debesyje (greitai, prieinama visur). Senesnės gali būti dar lokalioje atmintyje — tokias sistema automatiškai migruoja į debesį, vienai per 5 sekundes. Po pirmo prisijungimo gali užtrukti pora minučių.</p></div></details>
+
+      <details><summary>Keli žmonės gali dirbti su sistema vienu metu?</summary><div class="answer"><p>Taip. Sistema palaiko realtime sync per Firebase — visi pakeitimai matomi visiems prisijungusiems iškart. Konfliktų, kai du žmonės redaguoja tą patį, sistema sprendžia pagal „last write wins" principą.</p></div></details>
+
+      <details><summary>Ar veikia be interneto?</summary><div class="answer"><p>Iš dalies. Aplikacija įsikrauna pirmą kartą ir veikia offline (iš naršyklės cache). Bet pakeitimai NESINCHRONIZUOJASI iki interneto sugrąžinimo. Rekomenduojame visada turėti ryšį.</p></div></details>
+
+      <details><summary>Kodėl negaliu pridėti to paties žmogaus į renginį?</summary><div class="answer"><p>Sistema aptiko konfliktą — žmogus jau dirba kitame renginyje tuo pačiu metu. Žiūrėkite <a href="#conflicts">Konfliktų valdymas</a>. Administratorius gali override'inti.</p></div></details>
+    </section>
+
+    <section id="tips">
+      <h1>Patarimai ir gera praktika</h1>
+      <p class="lead">Mažos gudrybės, kurios sutaupo daug laiko.</p>
+
+      <h3>Greitis ir efektyvumas</h3>
+      <ul>
+        <li><strong>Komplektai vietoj atskiros įrangos.</strong> Pridėkite visą setup'ą per vieną spustelėjimą</li>
+        <li><strong>QR skenavimas mobile telefonu.</strong> Greičiau už serijos numerio paiešką</li>
+        <li><strong>Add to Home Screen iPhone.</strong> Veiks kaip native programėlė</li>
+        <li><strong>Dažni renginiai — klonavimas.</strong> Atidarykite ankstesnį renginį → Daugiau → Klonuoti</li>
+      </ul>
+
+      <h3>Tikslus atlyginimo skaičiavimas</h3>
+      <ul>
+        <li><strong>Vienodos pareigybės visiems.</strong> Greičiau ir mažiau klaidų</li>
+        <li><strong>Multi-day → atskiros valandos.</strong> Neapibendrinkite, įveskite per kiekvieną dieną</li>
+        <li><strong>Patikrinkite konfliktus.</strong> Prieš tvirtinant renginį pas klientą</li>
+        <li><strong>Įvedinėkite valandas iš karto.</strong> Po renginio per vieną dieną, kol viskas šviežiame atminime</li>
+      </ul>
+
+      <h3>Saugumas</h3>
+      <ul>
+        <li><strong>VIP įranga.</strong> Pažymėkite kainingas arba jautrias įrangas, kad grąžinant reikėtų nuotraukos</li>
+        <li><strong>Rolės.</strong> Neduokite admin teisių, jei nereikia</li>
+        <li><strong>Audit log.</strong> Periodiškai peržvelkite, kas ką keičia</li>
+      </ul>
+
+      <h3>Komandos darbas</h3>
+      <ul>
+        <li><strong>Renginio chat'as.</strong> Visi komandos pranešimai vienoje vietoje, ne WhatsApp</li>
+        <li><strong>Statusų judėjimas.</strong> Juodraštis → Pasiūlymas → Patvirtintas → Įvyko</li>
+        <li><strong>Profitabilumo monitoringas.</strong> Sekite mažus pelnus, jie sumuojasi</li>
+      </ul>
+    </section>
+
+    <section id="troubleshooting">
+      <h1>Problemų sprendimas</h1>
+      <p class="lead">Jei kažkas neveikia kaip turėtų — pirmiausia patikrinkite čia.</p>
+
+      <h3>Įrangos statusai nesutampa</h3>
+      <div class="card">
+        <p><strong>Simptomai.</strong> Įranga rodoma kaip „paimta", bet realiai sandėlyje. Arba atvirkščiai.</p>
+        <p style="margin-bottom:0"><strong>Sprendimas:</strong></p>
+        <ol style="margin-bottom:0">
+          <li>Eikite į <strong>Nustatymai → Saugykla</strong></li>
+          <li>Viršuje (jei yra problemų) atsiranda raudona dėžutė</li>
+          <li>Spauskite <span class="btn-mock no">Sutaisyti automatiškai</span></li>
+          <li>Sistema susinchronizuos visus state'us</li>
+        </ol>
+      </div>
+
+      <h3>Aplikacija „atrodo seniai"</h3>
+      <p>Galbūt naršyklė rodo cache'inę versiją. Sprendimas:</p>
+      <ul>
+        <li><strong>Hard refresh:</strong> <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>R</kbd> (Win) arba <kbd>Cmd</kbd> <kbd>Shift</kbd> <kbd>R</kbd> (Mac)</li>
+        <li><strong>Mobile:</strong> Užverkite naršyklės tab'ą ir atidarykite iš naujo</li>
+        <li><strong>Add to Home Screen:</strong> Ištrinkite ir pridėkite iš naujo</li>
+      </ul>
+
+      <h3>Negaliu prisijungti</h3>
+      <ol>
+        <li>Patikrinkite, ar tikrai įvedate teisingą username arba PIN</li>
+        <li>Patikrinkite interneto ryšį</li>
+        <li>Bandykite hard refresh (žiūrėkite aukščiau)</li>
+        <li>Kreipkitės į administratorių — galbūt paskyra išjungta</li>
+      </ol>
+
+      <h3>Time picker nerodo dienų</h3>
+      <p>Paprastai todėl, kad renginys neturi datos. Patikrinkite:</p>
+      <ul>
+        <li>Ar renginys turi nustatytą pradžios datą?</li>
+        <li>Ar pabaigos data ne anksčiau už pradžios?</li>
+        <li>Ar žmogus turi priskirtą pareigybę?</li>
+      </ul>
+
+      <h3>Telefonas neatpažįsta QR kodo</h3>
+      <ul>
+        <li><strong>Šviesa.</strong> Įsitikinkite, kad QR kodas gerai apšviestas</li>
+        <li><strong>Atstumas.</strong> 15–25 cm tarp kameros ir QR</li>
+        <li><strong>Leidimas.</strong> Naršyklė turi leisti naudoti kamerą (paklaus pirmą kartą)</li>
+        <li><strong>HTTPS.</strong> Naršyklė reikalauja saugaus ryšio kameros prieigai. <code>oniroco-idc.vercel.app</code> yra HTTPS — viskas tvarkoje.</li>
+      </ul>
+
+      <div class="note">
+        <strong>Vis tiek neveikia?</strong> Susisiekite su sistemos administratoriumi. Pateikite informaciją: ką darėte, ką tikėjotės, kas atsitiko, kuriame įrenginyje, kuriuo metu. Tai padės greičiau išspręsti.
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <p><strong>Oniroco IEC</strong> — Intelligent Events Control</p>
+  <p>Vartotojo gidas v1.0</p>
+  <p style="margin-top:12px">Pagalba: <kbd>Ctrl</kbd> <kbd>F</kbd> arba <a href="#top">grįžti į viršų</a></p>
+</footer>
+
+<script>
+const sections=document.querySelectorAll('section[id]');
+const sidebarLinks=document.querySelectorAll('.sidebar a');
+
+function updateActive(){
+  let current='';
+  const scrollY=window.scrollY+120;
+  sections.forEach(s=>{if(scrollY>=s.offsetTop)current=s.id});
+  sidebarLinks.forEach(a=>{
+    a.classList.toggle('on',a.getAttribute('href')==='#'+current);
+  });
+}
+window.addEventListener('scroll',updateActive,{passive:true});
+updateActive();
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const target=document.querySelector(a.getAttribute('href'));
+    if(target){
+      e.preventDefault();
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+      history.replaceState(null,'',a.getAttribute('href'));
+    }
+  });
+});
+
+function searchGuide(q){
+  q=(q||'').toLowerCase().trim();
+  if(!q){
+    sections.forEach(s=>s.style.display='');
+    return;
+  }
+  sections.forEach(s=>{
+    const text=s.textContent.toLowerCase();
+    s.style.display=text.includes(q)?'':'none';
+  });
+}
+</script>
+</body>
+</html>
